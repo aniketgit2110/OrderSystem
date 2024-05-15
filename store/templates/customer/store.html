@@ -1,0 +1,165 @@
+{% extends 'base/main.html' %}
+{% load static %}
+
+{% block content %}
+
+    <link rel="stylesheet" href="{% static 'css/customer/customer.css' %}">
+
+    <div class="col-12">
+        <div class="mobile-navlinks" style="display: grid; grid-template-columns: 50% 39% 11%;">
+            <a class="btn store" style="width:auto; justify-self:end" href="{% url 'store' %}">Store</a> 
+            <a class="btn orders" style="width:auto; justify-self:start; " href="{% url 'myOrders' %}">Orders</a>
+            <a href="{% url 'logout' %}"class="btn-warning" style="font-size:14px;width:max-content;height:30px; padding:2px 6px; transform:translateX(20px)" id="logout">
+                <img src="{% static 'images/logout.png' %}" style="width: 22px; height: 22px; transform:translateY(1px); background-color: #ffc107; " >
+            </a>        
+        </div>
+        <hr style='border-bottom: 1px solid black;'>
+    </div>
+
+    <div class="container">
+        <div class="row" style="display:grid;grid-template-columns: 100%">
+            
+            <div class="col-6 cat-box" style="justify-self:center" >
+                <a class="category-block" data-category="smart-silk" onclick="toggleProducts()">Smart Silk</a>
+            </div>
+
+
+        </div>
+    </div>
+
+    {% comment %} <hr style='border-bottom: 1px solid black;'> {% endcomment %}
+
+    <div id="category-content" class="">   
+
+        <div class="product-list-container">
+
+            <div class="product-list hidden" id="smart-silk-products">
+                <ul>
+                    <div class="product-list-search-bar">
+                        <input type="text" id="ss-search-bar" placeholder="Search Smart Silk products...">
+                    </div>
+
+                    <div id="ss-product-list">
+                    {% for product in ss_products %}
+                        <li style="display: grid; grid-template-columns: auto auto;">
+                                
+                            {{ product.name }}
+
+                            <div class="product-quantity-selector" style='justify-self: end'>
+                                Qty:
+                                <select class="product-dropdown" id="product-quantity-dropdown-{{ product.id }}">
+                                    <option value="">-</option>
+                                    <option value="4">4</option>
+                                    <option value="8">8</option>
+                                    <option value="12">12</option>
+                                    <option value="16">16</option>
+                                    <option value="20">20</option>
+                                    <option value="24">24</option>
+                                    <option value="28">28</option>
+                                    <option value="32">32</option>
+                                    <option value="36">36</option>
+                                    <option value="40">40</option>
+                                    <option value="60">60</option>
+                                    <option value="80">80</option>
+                                </select>
+                            </div>
+                        </li>                    
+                    {% endfor %}
+                    </div>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="cart-info-container">
+            <div class="cart-heading-container">
+                <a class="cart-heading" style=" font-size:25px; font-weight:500">Your Cart - Smart Silk</a>
+                
+                {% comment %} <div class="toggle-button-wrapper"style="justify-content: right;">
+                    <label for="urgent-toggle" >Urgent Order:</label>
+                    <input type="checkbox" id="urgent-toggle" class="urgent-switch toggle-switch">
+                </div> {% endcomment %}
+            </div>
+            
+            <hr style='border-bottom: 1px solid #ececec;'>
+            
+            
+            <div id="cart-items" style="list-style: none; padding-inline-start:15px;">
+                {% for item in items %}
+                    <li class="cart-items">
+                        {% comment %} Shade - {% endcomment %}
+                        <div style='flex:2'>{{ item.product.name }}</div>
+                        <div style='flex:0.1'></div>
+                        <div style='flex:1'>-</div>
+                        {% comment %} Quantity {% endcomment %}
+                        <div style='flex:1'>
+                            {% if item.product.category.name == "Red Poly" %}
+                                <select class="quantity-dropdown" id="quantity-dropdown-{{ item.product.id }}">
+                                    <option>{{ item.quantity }}</option> 
+                                    <option value="40">40</option>
+                                    <option value="80">80</option>
+                                    <option value="120">120</option>
+                                    <option value="160">160</option>
+                                </select>       
+                            {% else %}
+                                <select class="quantity-dropdown" id="quantity-dropdown-{{ item.product.id }}">
+                                    <option>{{ item.quantity }}</option> 
+                                    <option value="4">4</option>
+                                    <option value="8">8</option>
+                                    <option value="12">12</option>
+                                    <option value="16">16</option>
+                                    <option value="20">20</option>
+                                    <option value="24">24</option>
+                                    <option value="28">28</option>
+                                    <option value="32">32</option>
+                                    <option value="36">36</option>
+                                    <option value="40">40</option>
+                                    <option value="60">60</option>
+                                    <option value="80">80</option>
+                                </select>  
+                            {% endif %}             
+                        </div>
+                        <div style='flex:0.5'></div>
+                        {% comment %} Urgent Toggle {% endcomment %}
+                        <div style='flex:2'>
+                            <div class="toggle-button-wrapper" style="transform: translateY(-12px);">
+                                <input type="checkbox" class="urgent-switch toggle-switch" data-item-id="{{ item.id }}" {% if item.urgent %}checked{% endif %}>
+                            </div>
+                        </div>
+                        <div style='flex:0.5'></div>
+                        {% comment %} Delete Button {% endcomment %}
+                        <div onclick="addItem('{{ item.product.id }}', 'delete')" class="btn delete-button" style='flex:0.4; height:35px;border-radius:10px;background-color: #ffacb4;border-color: #30070b;'>
+                            <img src="{% static 'images/dustbin.png' %}" style="width: 22px; height: 22px;transform:translateY(-3px);" >
+                        </div>
+                        <div style='flex:1'></div>
+                    </li>
+                    <hr style='border-bottom: 2.5px solid #ececec;'>
+                    
+                {% endfor %}
+
+                </div>
+            
+            <div class='red-poly-alert hidden'>
+                <div class="alert alert-warning mt-3">
+                    Note : Red Poly products are made to order and cannot be cancelled.
+                </div>
+            </div>
+            
+            <div class='cart-items'>
+                <div style='flex:1' class="total" id="total">{% comment %} Cart Total:  {% endcomment %}<span id="total-price">{% comment %} ₹{{order.get_cart_total}} {% endcomment %}</span></div>
+
+                <div style='flex:1'></div>
+
+                <div style='flex:1' id="place-order">
+                    <button class="btn btn-success btn-block" id="submit" style="width:120px;border-radius:12px">Place Order</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/customer/navbar.js' %}"></script>
+
+    <script src="{% static 'js/customer/store.js' %}"></script>
+
+{% endblock content %}

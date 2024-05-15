@@ -1,0 +1,124 @@
+.dealer-type{
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.cart-row{
+	display: flex;
+    align-items: flex-stretch;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    margin-bottom: 10px;
+    border-bottom: none;
+    background-color: #ffffff;
+    border-radius:10px;
+    border: 1px solid black;
+}
+
+.update-button,
+.create-user {
+  background-color: #007bff; 
+  color: white; 
+  border: none; 
+  padding: 6px 15px; 
+  border-radius: 12px; 
+  cursor: pointer; 
+  margin-top: 12px;
+}
+
+.update-button[disabled],
+.create-user[disabled] {
+  opacity: 0.5; /* Adjust the opacity as per your preference */
+  pointer-events: none; /* Disable pointer events */
+  cursor: not-allowed; /* Change cursor to not-allowed */
+}
+
+@media (min-width: 540px) {
+  .col-12{
+    display: none;
+  }
+  
+}
+
+
+@media (max-width: 480px) {
+    body{
+        font-size:13px;
+    }
+
+    .form-control,
+    .dealer-type {
+        font-size: 13px;
+    }
+
+    .mobile-navlinks {
+        display: flex; /* Show on medium screens */
+        padding: 10px 20px; /* Add padding around buttons */
+      }
+    
+      .mobile-navlinks a {
+        font-size: 18px; /* Adjust font size for medium screens */
+        font-weight: bold; /* Make buttons bold */
+        border-radius: 5px; /* Add rounded corners */
+      }
+    
+      .mobile-navlinks a:hover {
+        background-color: #f5f5f5; /* Add hover effect */
+      }
+    
+      .manage { /* Style Store button (active) */
+        border-bottom: 3px solid black; /* Thick bottom border */
+        background-color: #ced7d8; /* Slight background color */
+      }
+      
+      .navbar{
+        display: none;
+    }
+}
+
+@media (max-width: 540px) {
+    body{
+        font-size:14px;
+    }
+
+    .form-control,
+    .dealer-type {
+        font-size: 14px;
+    }
+
+    .mobile-navlinks {
+        display: flex; /* Show on medium screens */
+        padding: 10px 20px; /* Add padding around buttons */
+      }
+    
+      .mobile-navlinks a {
+        font-size: 20px; /* Adjust font size for medium screens */
+        font-weight: bold; /* Make buttons bold */
+        border-radius: 5px; /* Add rounded corners */
+      }
+    
+      .mobile-navlinks a:hover {
+        background-color: #f5f5f5; /* Add hover effect */
+      }
+    
+      .manage { /* Style Store button (active) */
+        border-bottom: 3px solid black; /* Thick bottom border */
+        background-color: #ced7d8; /* Slight background color */
+      }
+      
+      .navbar{
+        display: none;
+    }
+
+}

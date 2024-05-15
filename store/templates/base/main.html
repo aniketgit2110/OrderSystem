@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>Four Square</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+
+
+    <script type="text/javascript">
+      var user = '{{request.user}}'
+
+      function getToken(name){
+        var cookieValue = null;
+        if(document.cookie && document.cookie !== ''){
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i< cookies.length; i++){
+            var cookie = cookies[i].trim();
+
+            if (cookie.substring(0, name.length+1) === (name + '=') ){
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      var csrftoken =  getToken('csrftoken');
+
+    </script>
+
+  </head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand">Four Square</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            {% comment %} Dealer Links {% endcomment %}
+            <li class="nav-item active">
+              <a class="nav-link hidden" href="{% url 'store' %}" id="customer-home">Store <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link hidden" href="{% url 'myOrders' %}" id="customer-orders">Orders <span class="sr-only">(current)</span></a>
+            </li>
+            
+            {% comment %} Manager Links {% endcomment %}
+            <li class="nav-item active">
+              <a class="nav-link hidden" href="{% url 'orders' %}" id="all-orders">Orders<span class="sr-only">(current)</span></a>
+            </li>
+            
+            
+            {% comment %} Admin Links {% endcomment %}
+            <li class="nav-item active">
+              <a class="nav-link hidden" href="{% url 'manage' %}" id="manage-users">Manage<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link hidden" href="{% url 'admin_orders' %}" id="admin-orders">Orders<span class="sr-only">(current)</span></a>
+            </li>
+            
+
+          </ul>
+          <div class="form-inline my-2 my-lg-0">
+            <a href="{% url 'login' %}"class="btn btn-warning" id="login">Login </a>
+            <br>
+            <a href="{% url 'logout' %}"class="btn btn-warning hidden" id="logout">Log Out </a>
+            
+            <a href="{% url 'store' %}">
+               <img  id="cart-icon" class='' src="{% static 'images/cart.png' %}" >
+           </a>
+           <p id="cart-total" class=''>{{cartItems}}</p>
+
+       </div>
+        </div>
+      </nav>
+
+    <div class="container">
+        {% block content%}
+        {% endblock content%}
+    </div>
+
+    <footer class="container py-5 footer" id="footer">
+      <hr>
+      <div class="row pt-4">
+          <div class="col-12 col-md">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-asterisk" viewBox="0 0 16 16">
+                  <path
+                      d="M8 0a1 1 0 0 1 1 1v5.268l4.562-2.634a1 1 0 1 1 1 1.732L10 8l4.562 2.634a1 1 0 1 1-1 1.732L9 9.732V15a1 1 0 1 1-2 0V9.732l-4.562 2.634a1 1 0 1 1-1-1.732L6 8 1.438 5.366a1 1 0 0 1 1-1.732L7 6.268V1a1 1 0 0 1 1-1z" />
+              </svg>
+              <small class="d-block mb-3 text-muted">&copy; 2023-2024</small>
+          </div>
+          <div class="col-6 col-md fs15">
+              
+          </div>
+          
+      </div>
+  </footer>
+  
+  <script type="text/javascript">
+    if(user != 'AnonymousUser'){
+      document.getElementById('login').classList.add('hidden')
+      document.getElementById('logout').classList.remove('hidden')
+    }
+    if(user == 'AnonymousUser'){
+      document.getElementById('cart-total').classList.add('hidden')
+      document.getElementById('customer-home').classList.add('hidden')
+      document.getElementById('customer-orders').classList.add('hidden')
+      document.getElementById('all-orders').classList.add('hidden')
+      document.getElementById('manage-users').classList.add('hidden')
+      document.getElementById('admin-orders').classList.add('hidden')
+      document.getElementById('footer').classList.add('hidden')
+    }
+    
+
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+  
+</body>
+</html>

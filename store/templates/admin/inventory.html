@@ -1,0 +1,231 @@
+{% extends 'base/main.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/manager/inventory.css' %}">
+
+    <div class="container">
+        <div class="row ">
+            <div class="col-md-6 cat-box">
+                <a class="category-block" data-category="hd">HD</a>
+            </div>
+            <div class="col-md-6 cat-box">
+                <a class="category-block" data-category="smart-silk">Smart Silk</a>
+            </div>
+
+            <div class="w-100"></div>
+
+            <div class="col-md-6 cat-box">
+                <a class="category-block" data-category="mtr800">800 Mtr</a>
+            </div>
+            <div class="col-md-6 cat-box">
+                <a class="category-block" data-category="red-poly">Red Poly </a>
+            </div>
+        </div>
+    </div>
+
+    <hr style='border-bottom: 1px solid black;'>
+
+    <div id="category-content" class="">   
+
+        <div class="product-list-container">
+            <div class="product-list" id="hd-products">
+                <ul>
+                    <div class="product-list-search-bar">
+                        <input type="text" id="hd-search-bar" placeholder="Search HD products...">
+                    </div>
+
+                    <div id="hd-product-list">
+                    {% for product in hd_products %}
+                        <li style="display: grid; grid-template-columns: 20% 40% auto;">
+                            
+                            {{ product.name }}
+                            
+                            
+                            <div class="product-quantity-selector" style='justify-self: center'>
+                                Available Inventory : {{product.inventory}}
+                            </div>
+
+                            <div style='justify-self: end'>
+                                <div style="display: grid; grid-template-columns: auto auto;" >
+                                    <div style="justify-self: start">
+                                        <button class="btn btn-outline-dark" id="submit" style="width:60px;justify-self:left;transform:translateX(-35px);"
+                                         onclick="addInventory({{product.id}},{{product.inventory}})">Add</button>                                    
+                                    </div>
+
+                                    <div class="product-quantity-selector" style='justify-self: end'>
+                                     
+                                        <select class="product-dropdown" style="transform: translateX(-15px); height: 36px; width: 45px;" id="product-quantity-dropdown-{{ product.id }}">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
+                                    </div>
+                                </div>    
+                            </div>
+                        </li>
+                    {% endfor %}
+                    </div> 
+
+
+                </ul>
+            </div>
+
+            <div class="product-list " id="smart-silk-products">
+                <ul>
+                    <div class="product-list-search-bar">
+                        <input type="text" id="ss-search-bar" placeholder="Search Smart Silk products...">
+                    </div>
+
+                    <div id="ss-product-list">
+                    {% for product in ss_products %}
+                    <li style="display: grid; grid-template-columns: 20% 40% auto;">
+                            
+                        {{ product.name }}
+                        
+                        
+                        <div class="product-quantity-selector" style='justify-self: center'>
+                            Available Inventory : {{product.inventory}}
+                        </div>
+
+                        <div style='justify-self: end'>
+                            <div style="display: grid; grid-template-columns: auto auto;" >
+                                <div style="justify-self: start">
+                                    <button class="btn btn-outline-dark" id="submit" style="width:60px;justify-self:left;transform:translateX(-35px);"
+                                    onclick="addInventory({{product.id}},{{product.inventory}})">Add</button>                                    
+                                </div>
+
+                                <div class="product-quantity-selector" style='justify-self: end'>
+                                 
+                                    <select class="product-dropdown" style="transform: translateX(-15px); height: 36px; width: 45px;" id="product-quantity-dropdown-{{ product.id }}">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                </div>
+                            </div> 
+                        </div>
+                    </li>                
+                    {% endfor %}
+                    </div>
+                </ul>
+            </div>
+
+            <div class="product-list" id="mtr800-products">
+                <ul>
+                    <div class="product-list-search-bar">
+                        <input type="text" id="mtr800-search-bar" placeholder="Search 800 Mtr products...">
+                    </div>    
+                    
+                    <div id="mtr800-product-list">
+                        {% for product in mtr800_products %}
+                        <li style="display: grid; grid-template-columns: 20% 40% auto;">
+                            
+                            {{ product.name }}
+                            
+                            
+                            <div class="product-quantity-selector" style='justify-self: center'>
+                                Available Inventory : {{product.inventory}}
+                            </div>
+
+                            <div style='justify-self: end'>
+                                <div style="display: grid; grid-template-columns: auto auto;" >
+                                    <div style="justify-self: start">
+                                        <button class="btn btn-outline-dark" id="submit" style="width:60px;justify-self:left;transform:translateX(-35px);"
+                                         onclick="addInventory({{product.id}},{{product.inventory}})">Add</button>                                    
+                                    </div>
+
+                                    <div class="product-quantity-selector" style='justify-self: end'>
+                                     
+                                        <select class="product-dropdown" style="transform: translateX(-15px); height: 36px; width: 45px;" id="product-quantity-dropdown-{{ product.id }}">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </div>
+                </ul>
+            </div>
+
+            <div class="product-list" id="red-poly-products"> 
+                <ul>
+                    <div class="product-list-search-bar">
+                        <input type="text" id="rp-search-bar" placeholder="Search Red Poly products...">
+                    </div>
+
+                    <div id="rp-product-list">
+                    {% for product in rp_products %}
+                    <li style="display: grid; grid-template-columns: 20% 40% auto;">
+                            
+                        {{ product.name }}
+                        
+                        
+                        <div class="product-quantity-selector" style='justify-self: center'>
+                            Available Inventory : {{product.inventory}}
+                        </div>
+
+                        <div style='justify-self: end'>
+                            <div style="display: grid; grid-template-columns: auto auto;" >
+                                <div style="justify-self: start">
+                                    <button class="btn btn-outline-dark" id="submit" style="width:60px;justify-self:left;transform:translateX(-35px);"
+                                     onclick="addInventory({{product.id}},{{product.inventory}})">Add</button>                                    
+                                </div>
+
+                                <div class="product-quantity-selector" style='justify-self: end'>
+                                 
+                                    <select class="product-dropdown" style="transform: translateX(-15px); height: 36px; width: 45px;" id="product-quantity-dropdown-{{ product.id }}">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </li>                 
+                    {% endfor %}
+                    </div>
+                </ul>
+            </div>
+            
+        </div>
+
+<script src="{% static 'js/admin/navbar.js' %}"></script>
+
+<script src="{% static 'js/manager/inventory.js' %}"></script>
+
+
+
+{% endblock content %}

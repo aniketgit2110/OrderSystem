@@ -1,0 +1,160 @@
+{% extends 'base/main.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/manager/manager.css' %}">
+
+<div class="col-12">
+  <div class="mobile-navlinks" style="display: grid; grid-template-columns: 35% 54% 11%;">
+      <a class="btn store" style="width:auto; justify-self:end"></a> 
+      <a class="btn orders" style="width:auto; justify-self:start; " href="{% url 'admin_orders' %}">Orders</a>
+      <a href="{% url 'logout' %}"class="btn-warning" style="font-size:14px;width:max-content;height:30px; padding:2px 6px; transform:translateX(20px)" id="logout">
+        <img src="{% static 'images/logout.png' %}" style="width: 22px; height: 22px; transform:translateY(1px); background-color: #ffc107; " >
+      </a>
+  </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-12">
+      <div style="display:grid;grid-template-columns: 46% 7% 47%;">
+        {% comment %} Customer Filter {% endcomment %}
+        <div class="filter-bar" style="display:grid;grid-template-columns: 28% 24% 25% 23%;font-size: 14px;border:1px solid; border-radius:10px;">
+          <div class="filter-dropdown" style="padding:2px;">
+              <button class="dropdown-toggle" id="custoner-filter-dropdown-toggle" onclick="toggleDropdown('customer-filter-dropdown-menu')"  aria-haspopup="true" aria-expanded="false">
+                  Filter Customers <span class="caret"></span>
+              </button>
+  
+              <div class="customer-filter-dropdown-menu hidden" id="customer-filter-dropdown-menu" aria-labelledby="customer-filter-dropdown-toggle" >
+                {% for customer in customers %}
+                  <div class="filter-category">
+                      <input type="checkbox" id="customer-filter-{{ customer.id }}" value="{{ customer.id }}">
+                      <label for="customer-filter-{{ customer.id }}">{{ customer.name }}</label>
+                  </div>
+                {% endfor %}
+              </div>
+          </div>
+        </div>
+
+        <div></div>
+
+        {% comment %} Date Filter {% endcomment %}
+        <input class="date-filter" type="date" id="date-filter" name="date" value=""
+        style="
+        border: 1px solid black;
+        padding-left: 8px;
+        padding-right: 8px;
+        font-size: 14.5px;
+        border-radius: 10px;">
+      </div>
+      
+
+
+    
+      <hr style='border-bottom: 1px solid black;'>
+
+      <div class="box">
+            
+        {% for customer in customers %}
+          {% comment %} Header {% endcomment %}
+          <div class="cart-row order-header-row" style="font-size:14.5px; border-bottom:none; padding-bottom:0px; margin-bottom:0px;" id="order-header-for-{{customer.id}}">
+            <div style="flex:0.2"></div>
+            <div style="flex:6"><strong>Showing Orders for : {{customer.name}}</strong></div>
+          </div>
+
+          {% comment %} Content {% endcomment %}
+          <div class="cart-row order-detail-row" id="order-details-for-{{customer.id}}">
+              <div class="products" style="flex:10; display: grid;font-size:14.5px">
+                
+                <div class="order-sections">
+                  <div class="order-section" id="customer-header-{{customer.id}}">
+                    {% comment %} Header {% endcomment %}
+                    <div class="section-header" style="display: grid; grid-template-columns: 22% 33% 33%;font-weight:400;border: 1px solid; border-radius: 9px;">
+                      <strong style="justify-self: start;">Shade</strong>
+                      <strong style="justify-self: start;">
+                        <label style="display: flex; align-items: center;">
+                          Pending
+                          <input type="checkbox" class="dispatch-all-button" id="dispatch-all-{{customer.id}}" style="margin-left: 5px;">
+                        </label>
+                      </strong>
+                      <strong style="justify-self: start;">
+                        <label style="display: flex; align-items: center;">
+                          Dispatched
+                          <input type="checkbox" class="revert-all-button" id="revert-all-{{customer.id}}" style="margin-left: 5px;">
+                        </label>
+                      </strong>
+                    </div>
+
+                    {% comment %} Product Content {% endcomment %}
+                    <div id="combined-content-{{customer.id}}" class="section-content" style="">
+                      <div class="updating-section" style="height: 350px;overflow-y: scroll;">
+                        {% for item in ordered_products %}
+                          {% if item.customer == customer %}                     
+                            <div class="inline-checkbox-{{ item.id }}" id="ordered-product-{{ item.id }}" style="display: grid; grid-template-columns: 18% 40% 42%;">
+                              {% comment %} shades {% endcomment %}
+                              <div style="justify-self: start; padding: 6px 0;padding-left:5px;" data-date="{{item.date_ordered}}">{{ item.product.name }}&nbsp;-</div>
+                                                            
+                              {% comment %} pending {% endcomment %}
+                              <div style="display: grid; padding: 4px 0;">
+                                
+                                <div style="justify-self: center; padding: 2px 0px;">
+                                  <div style="display: grid; grid-template-columns: auto auto auto;">
+                                    <label for="available-{{ item.id }}" style="display: inline-block; width: 40px;">Qty : </label>
+                                    
+                                    <select id="available-{{ item.id }}" name="available-{{ item.id }}" style="display: inline-block; width: 42px; height: 26px;">
+                                      <option value="{{ item.pending_quantity }}">{{ item.pending_quantity }}</option>
+                                    </select>
+
+                                    {% comment %} Individual Full Quantity Send Checkbox {% endcomment %}
+                                    <input type="checkbox" class="individual-send-button" id="individual-send-{{ item.id }}" style="margin-left: 5px;">
+                                  
+                                  </div>
+                                </div>
+
+                              </div>
+
+                              {% comment %} dispatched {% endcomment %}
+                              <div style="display: grid; padding: 4px 0;">
+                                           
+                                <div style="justify-self: center; padding: 2px 0;">
+                                  <div style="display: grid; grid-template-columns: auto auto auto;">
+                                    <label for="dispatched-{{ item.id }}" style="display: inline-block; width: 40px;">Qty : </label>
+
+                                    <select id="dispatched-{{ item.id }}" name="dispatched-{{ item.id }}" style="display: inline-block; width: 42px; height: 26px;">
+                                      <option value="{{ item.dispatched_quantity }}">{{ item.dispatched_quantity }}</option>
+                                    </select>
+
+                                    {% comment %} Individual Full Quantity Revert Checkbox {% endcomment %}
+                                    <input type="checkbox" class="individual-revert-button" id="individual-revert-{{ item.id }}" style="margin-left: 5px;">
+                                  
+                                  </div>
+                                </div>
+                              </div>
+
+                            </div>
+                          {% endif %} 
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+              
+              
+          </div>
+
+        {% endfor %}
+        </div>
+    </div>
+</div>
+
+<br>
+
+
+
+<script src="{% static 'js/manager/navbar.js' %}"></script>
+<script src="{% static 'js/manager/filterbar.js' %}"></script>
+<script src="{% static 'js/manager/orders.js' %}"></script>
+
+
+{% endblock content %}

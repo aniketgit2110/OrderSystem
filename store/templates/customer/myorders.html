@@ -1,0 +1,112 @@
+{% extends 'base/main.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/customer/myorders.css' %}">
+
+<div class="row">
+    <div class="col-12">
+        <div class="mobile-navlinks" style="display: grid; grid-template-columns: 50% 36% 14%;">
+            <a class="btn store" style="width:auto; justify-self:end" href="{% url 'store' %}">{% comment %} &#x2190; {% endcomment %}Store</a> 
+            <a class="btn orders" style="width:auto; justify-self:start" href="{% url 'myOrders' %}">{% comment %} &#x2190; {% endcomment %}Orders</a> 
+            <a href="{% url 'logout' %}"class="btn-warning" style="font-size:14px;width:max-content;height:30px; padding:2px 6px; transform:translateX(20px)" id="logout">
+                <img src="{% static 'images/logout.png' %}" style="width: 22px; height: 22px; transform:translateY(1px); background-color: #ffc107; " >
+            </a>
+        </div>
+        <hr style='border-bottom: 1px solid black;'>
+    </div>
+
+    <div class="col-lg-12">
+        {% comment %} Filter Bar {% endcomment %}
+
+        <div class="filter-bar">
+                <button class="filter-button" id="pending-button" style="border-start-start-radius: 25px;
+                border-end-start-radius: 25px;">Pending</button>
+                <button class="filter-button" id="dispatched-button" style="border-end-end-radius: 25px;
+                border-start-end-radius: 25px;">Dispatched</button>
+          </div>
+        <hr style='border-bottom: 2px black;'>
+
+        {% comment %}Pending Products {% endcomment %}
+        <div class="box" id="pending-products-section">
+            {% comment %} Header {% endcomment %}
+            <div class="cart-row">
+                <div style="flex:2"></div>
+                <div style="flex:10; font-size:16px; font-weight:600;">Pending Smart Silk Products</div>
+                <div style="flex:5.5"></div>   
+            </div>
+
+            {% comment %} Content {% endcomment %}
+            <div class="cart-row order-detail-row" id="order-details">
+                <div style="flex:.5"></div>
+
+                {% comment %} Product Details {% endcomment %}
+                <div class="products" style="flex:6.5; max-height: 350px; overflow-y: scroll;">
+                    {% for item in ordered_products %}
+                        {% if item.pending_quantity > 0%}
+                            <div style='display:grid;grid-template-columns:8% 36% 8% 15% 8% 15% 8%;'>
+                                <a></a>
+                                <p style="justify-self:start;">{{ item.product }} - {{ item.pending_quantity }}</p>
+                                <a></a>
+                                <div class="toggle-button-wrapper" style="transform: translateY(-12px);">
+                                    <input type="checkbox" class="urgent-switch toggle-switch" data-item-id="{{ item.id }}" {% if item.urgent %}checked{% endif %}>
+                                </div>
+                                <a></a>
+                                <div onclick="requestCancellation({{ item.id }})" class="btn delete-button {% if item.status == 'cancel-requested'%}hidden{% endif%}" id="delete-ordered-{{item.id}}"
+                                style='height:35px;border-radius:10px;background-color: #ffacb4;border-color: #30070b;'>
+                                    <img src="{% static 'images/dustbin.png' %}" style="width: 22px; height: 22px;transform:translateY(-3px);" >
+                                </div>
+                                <div onclick="revertCancellation({{ item.id }})" class="btn revert-button {% if item.status == 'placed'%}hidden{% endif%}" id="revert-deleted-{{item.id}}"
+                                style='height:35px;border-radius:10px;background-color: #eaf3a4;border-color: #2a2907;'>
+                                    <img src="{% static 'images/revert.svg' %}" style="width: 22px; height: 22px;transform:translateY(-3px);" >
+                                </div>
+                                <a></a>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                
+                <div style="flex:0.5"></div>
+            </div>
+        </div>
+
+        {% comment %}Dispatched Products {% endcomment %}
+        <div class="box hidden" id="dispatched-products-section">
+            {% comment %} Header {% endcomment %}
+            <div class="cart-row">
+                <div style="flex:2"></div>
+                <div style="flex:10; font-size:16px; font-weight:600;">Dispatched Smart Silk Products</div>
+                <div style="flex:5.5"></div>   
+            </div>
+
+            {% comment %} Content {% endcomment %}
+            <div class="cart-row order-detail-row" id="order-details">
+                <div style="flex:.5"></div>
+
+                {% comment %} Product Details {% endcomment %}
+                <div class="products" style="flex:6.5; max-height: 350px; overflow-y: scroll;">
+                    {% for item in ordered_products %}
+                        {% if item.dispatched_quantity > 0%}
+                            <div style='display:grid;grid-template-columns:8% 36% 54% ;'>
+
+                                <a></a>
+                                <p style="justify-self:start;">{{ item.product }} - {{ item.dispatched_quantity }}</p>
+                                <a></a>
+                                
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                
+                <div style="flex:0.5"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="{% static 'js/customer/navbar.js' %}"></script>
+
+<script src="{% static 'js/customer/myorders.js' %}"></script>
+
+{% endblock content %}

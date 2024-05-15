@@ -1,0 +1,124 @@
+@import url("main.css");
+
+
+.category-block {
+    color: #666; 
+    font-size: 40px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none; 
+    width: flex; 
+    height: flex;
+    background-color: #fff;
+    border: 2px solid black;
+    border-radius: 4px;
+    padding: 20px 10px;
+    margin: 20px;
+}
+
+.category-block:hover {
+    text-decoration: none;
+    background-color: black;
+    cursor: pointer; 
+}
+
+.category-block.selected {
+    color: white;
+    text-decoration: none;
+    background-color: black; 
+}
+
+.cat-box:hover {
+  color: white;
+  text-decoration: none;
+  cursor: pointer; 
+}
+
+.cat-box.selected {
+  color: white;
+  text-decoration: none;
+  background-color: black; 
+}
+
+.category-name {
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.category-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .category-box {
+    flex: 1 1fr;
+    margin: 10px; 
+  }
+  
+  @media (min-width: 768px) {  
+    .category-container {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    }
+  }
+  
+
+#category-content {
+  display: flex;  
+  }
+
+
+  .product-list-container {
+    text-decoration: none;
+    flex-wrap: wrap;  
+    justify-content: space-around;  
+    width: 80%; 
+  }
+    
+  
+  .product-list ul{
+    list-style: none; 
+    border: 1px solid #ccc; 
+    padding: 15px; 
+    margin: 10px; 
+    width: 90%; 
+    font-weight: 600;
+    transform: translateX(5%);
+  }
+  
+  
+  .product-list li {
+      padding: 10px 15px; 
+  }
+  
+  .add-product-button:hover {
+    color: white;
+    background-color: black;  
+    transition: background-color 0.2s ease-in-out; 
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  } 
+  
+  
+  
+  .product-list-search-bar {
+    width: 100%;  
+    padding: 10px 15px;  
+    border: 1px solid black;  
+    border-radius: 5px;  
+    margin-bottom: 15px;  
+  }
+  
+  .product-list-search-bar input[type="text"] {
+    width: 100%; 
+    padding: 5px;  
+    border: none;  
+    font-size: 16px;  
+  }
+  
+  .product-list-search-bar input[type="text"]:focus {
+    outline: none;  
+    border-color: #007bff;  
+    box-shadow: 0 0 5px rgb(1, 1, 14, 1);  
+  }
