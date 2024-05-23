@@ -2,14 +2,14 @@
 {% load static %}
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'css/admin/manage.css' %}">
+<link rel="stylesheet" href="/static/css/admin/manage.css">
 
 <div class="col-12">
   <div class="mobile-navlinks" style="display: grid; grid-template-columns: 50% 39% 11%;">
       <a class="btn manage" style="width:auto; justify-self:end" href="{% url 'manage' %}">Users</a> 
       <a class="btn orders" style="width:auto; justify-self:start; " href="{% url 'admin_orders' %}">Orders</a>
       <a href="{% url 'logout' %}"class="btn-warning" style="font-size:14px;width:max-content;height:30px; padding:2px 6px; transform:translateX(20px)" id="logout">
-        <img src="{% static 'images/logout.png' %}" style="width: 22px; height: 22px; transform:translateY(1px); background-color: #ffc107; " >
+        <img src="/static/images/logout.png" style="width: 22px; height: 22px; transform:translateY(1px); background-color: #ffc107; " >
       </a> 	
   </div>
   
@@ -22,18 +22,17 @@
 
         <div class="box">
             {% for user in users %}
+            <div class="user-wrapper" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); border-radius: 14px; padding: 6px;background-color: white">
 
-              <strong style="font-size:16px;padding-left:10px;">{{user.customer.name}}</strong>
+              <strong style="font-size:16px;padding-left:10px;background-color: white">{{user.customer.name}}</strong>
 
               <div class="cart-row">
                 <div style="flex:0.5"></div>
 
                 <div style="flex:4" class="details" id="details-{{user.username}}">
           
-
                   <div style="padding-bottom: 9px;width: max-content;">
                     <label>Username </label>                      
-                    
                     <div class="username-container-{{user.id}}" style="position:relative;">
                       <input class="update-user-username" type="password" id="username-{{ user.id }}" style="width:100%;height:30px;border-radius:10px;border:1px solid black" value="{{ user.username }}">
                       <span class="toggle-username" style="position:absolute; right:3%; top:-55%; transform:translateY(-50%); cursor:pointer;" onclick="toggleUsername({{user.id}})">
@@ -41,14 +40,14 @@
                           <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
                         </svg>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="22" width="22" style="display: none;">
-                          <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/><path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/><path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12-.708.708z"/></svg>
+                          <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/><path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/><path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12-.708.708z"/>
+                        </svg>
                       </span>
                     </div>
                   </div>
 
                   <div class="form-field" style="width: max-content;">
                     <label style="justify-self:start;">Password </label>
-
                     <div class="password-container-{{user.id}}" style="position:relative;">
                       <input class="update-user-password" type="password" id="password-{{ user.id }}" style="width:100%;height:30px;border-radius:10px;border:1px solid black"  value="{{ user.customer.password }}">
                       <span class="toggle-password" style="position:absolute; right:3%; top:-55%; transform:translateY(-50%); cursor:pointer;" onclick="togglePassword({{user.id}})">
@@ -56,11 +55,13 @@
                           <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
                         </svg>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="22" width="22" style="display: none;">
-                          <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/><path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/><path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12-.708.708z"/></svg>
+                          <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/><path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/><path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12-.708.708z"/>
+                        </svg>
                       </span> 
                     </div>
                   </div>
 
+                  <br>
                   <button class="update-button" id="update-button-{{user.id}}" >Update</button>
 
                 </div>
@@ -68,7 +69,7 @@
                 <div style="flex:1;"></div>
 
 
-                <div style="flex:4;padding-left: 10px;padding-right: 10px">
+                <div style="flex:4;padding-right:18px">
                   Roles :
                     <div class="user-role-{{ user.username }}" data-id="{{ user.id }}">
                         <select id="user-role-{{ user.username }}" name="user-role" class="form-control" style="border: 1px solid;border-radius: 10px">
@@ -81,25 +82,24 @@
                     <br>
 
                     {% if user.customer.user_type == 'customer' %}
-      
+                    Dealer Type :
                       {% if user.customer.redpoly == 'yes' %}
-                      
                         <div class="dealer-role-{{user.username}}" data-id="{{ user.id }}">
-                          Dealer Type :
                           <select id="dealer-role-{{ user.username }}" name="dealer-role" class="dealer-type redpoly-dealer" style="border: 1px solid;border-radius: 10px">
                             <option value="customer" selected>Red Poly</option>
                             <option value="customer" >Normal</option>
                           </select>
                         </div>
+
                       {% elif user.customer.redpoly == 'no' %}
                         <div class="dealer-role-{{ user.username }}" data-id="{{ user.id }}">
-                          Dealer Type :
                           <select id="dealer-role-{{ user.username }}" name="dealer-role" class="dealer-type normal-dealer" style="border: 1px solid;border-radius: 10px">
                             <option value="customer" selected>Normal</option>
                             <option value="customer" >Red Poly</option>
                           </select>
                         </div>
                       {% endif %}
+
                     {% else %}
                       <div class="dealer-role-{{ user.username }}" data-id="{{ user.id }}">
                       </div>
@@ -107,23 +107,63 @@
 
                 </div>
 
-                
-      
-                <div style="flex:1">
-                </div>
 
               </div>
+            </div>
+
+            <br>
             {% endfor %}
         </div>
     </div>
 </div>
 
-<button class="create-user" id="create-user-{{user.id}}" >Create User +</button>
+<hr>
+
+<button class="create-new-user" id="create-new-user">Create New User</button>
+
+<div class="hidden" id="new-user-form">
+  <h4>Create New User</h4>
+  <br>
+
+  <form id="user-form">
+      <label for="name">Name:</label>
+      <input type="text" id="new-user-name" name="name" required>
+      
+      <br>
+      <label for="username">Username:</label>
+      <input type="text" id="new-user-username" name="username" required>
+
+      <br>
+      <label for="password">Password:</label>
+      <input type="password" id="new-user-password" name="password" required>
+     
+      <br>
+      <label for="role">Role:</label>
+      <select id="role" name="new-user-role" required>
+          <option value="" selected disabled>Select Role</option>
+          <option value="admin">Admin</option>
+          <option value="manager">Manager</option>
+          <option value="customer">Dealer</option>
+      </select>
+
+      <br>
+      <div class ="dealer-type-container hidden" id="dealer-type-container">
+          <label for="dealer-type">Dealer Type:</label>
+          <select id="dealer-type" name="dealer-type">
+            <option value="normal">Normal</option>
+            <option value="redpoly">Red Poly</option>
+          </select>
+      </div>
+
+      <button type="button" class="create-user-button" id="create-user-button" disabled>Create</button>
+      <button type="button" class="cancel-new-user" id="cancel-new-user">Cancel</button>
+  </form>
+</div>
 
 
 
-<script src="{% static 'js/admin/navbar.js' %}"></script>
+<script src="/static/js/admin/navbar.js"></script>
 
-<script src="{% static 'js/admin/manage.js' %}"></script>
+<script src="/static/js/admin/manage.js"></script>
 
 {% endblock content %}

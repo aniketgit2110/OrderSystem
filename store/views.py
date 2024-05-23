@@ -1,9 +1,11 @@
+from collections import defaultdict
 from pyexpat.errors import messages
 from django.shortcuts import render
 from django.http import JsonResponse,HttpResponse
 import json
-from datetime import datetime
+from datetime import datetime,timedelta
 from django.utils.timezone import localtime
+from django.utils import timezone
 from .models import *
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
@@ -132,7 +134,20 @@ def orders(request):
         if customer.user_type in ('admin', 'manager'):
             customers = Customer.objects.filter(user_type='customer')
             ordered_products = OrderedProduct.objects.all().order_by('-date_ordered')
-            context = {'customers': customers, 'products': products, 'ordered_products':ordered_products }
+
+            # Group ordered products by customer and date
+            customer_orders = {}
+            for customer in customers:
+                customer_orders[customer.id] = defaultdict(list)
+                for item in ordered_products:
+                    if item.customer == customer:
+                        ordered_date = item.date_ordered.strftime('%d-%m-%Y')
+                        customer_orders[customer.id][ordered_date].append(item)
+
+                # Sort the keys (dates) in reverse order to get latest first
+                customer_orders[customer.id] = dict(sorted(customer_orders[customer.id].items(), key=lambda x: datetime.strptime(x[0], '%d-%m-%Y'), reverse=True))
+
+            context = {'customers': customers, 'products': products, 'ordered_products':ordered_products, 'customer_orders': customer_orders }
             return render(request, 'manager/orders.html', context) 
         else:
             return render(request, 'base/invalid.html')
@@ -174,8 +189,16 @@ def revertDispatch(request):
 def dispatchAll(request):
     data = json.loads(request.body)
     custId = data['cust_id']
+    date_str = data['date']
+    date_start = datetime.strptime(date_str, '%d-%m-%Y')
+    date_end = date_start + timedelta(days=1)
+
+    # Ensure the datetimes are timezone-aware
+    date_start = timezone.make_aware(date_start)
+    date_end = timezone.make_aware(date_end)
+
     customer = Customer.objects.get(id=custId)
-    items = OrderedProduct.objects.filter(customer=customer)
+    items = OrderedProduct.objects.filter(customer=customer, date_ordered__gte=date_start, date_ordered__lt=date_end)
     for product in items:
         product.dispatched_quantity += product.pending_quantity
         product.pending_quantity = 0
@@ -186,8 +209,16 @@ def dispatchAll(request):
 def revertAll(request):
     data = json.loads(request.body)
     custId = data['cust_id']
+    date_str = data['date']
+    date_start = datetime.strptime(date_str, '%d-%m-%Y')
+    date_end = date_start + timedelta(days=1)
+
+    # Ensure the datetimes are timezone-aware
+    date_start = timezone.make_aware(date_start)
+    date_end = timezone.make_aware(date_end)
+
     customer = Customer.objects.get(id=custId)
-    items = OrderedProduct.objects.filter(customer=customer)
+    items = OrderedProduct.objects.filter(customer=customer, date_ordered__gte=date_start, date_ordered__lt=date_end)
     for product in items:
         product.pending_quantity += product.dispatched_quantity
         product.dispatched_quantity = 0
@@ -224,10 +255,9 @@ def revertSingle(request):
 
 def getContent(request):
     data = json.loads(request.body)
-    custId = data['cust_id']
+    itemId = data['item_id']
 
-    customer = Customer.objects.get(id=custId)
-    items = OrderedProduct.objects.filter(customer=customer)
+    items = OrderedProduct.objects.filter(id=itemId)
 
     product_ids = items.values_list('product_id', flat=True)
     products = Product.objects.filter(id__in=product_ids).values('id', 'name', 'category')
@@ -236,7 +266,26 @@ def getContent(request):
                          'products': list(products.values()),
                          })
 
+def getOrderContent(request):
+    data = json.loads(request.body)
+    custId = data['cust_id']
+    date_str = data['date']
+    date_start = datetime.strptime(date_str, '%d-%m-%Y')
+    date_end = date_start + timedelta(days=1)
 
+    # Ensure the datetimes are timezone-aware
+    date_start = timezone.make_aware(date_start)
+    date_end = timezone.make_aware(date_end)
+
+    customer = Customer.objects.get(id=custId)
+    items = OrderedProduct.objects.filter(customer=customer, date_ordered__gte=date_start, date_ordered__lt=date_end).order_by('-date_ordered')
+
+    product_ids = items.values_list('product_id', flat=True)
+    products = Product.objects.filter(id__in=product_ids).values('id', 'name', 'category')
+
+    return JsonResponse({'items': list(items.values()),
+                         'products': list(products.values()),
+                         })
 
 
 def updateStatus(request):
@@ -460,7 +509,7 @@ def store(request):
 """ Order Functions """
 
 def submitOrder(request):
-    transaction_id =  datetime.datetime.now().timestamp()
+    transaction_id =  datetime.now().timestamp()
     data = json.loads(request.body)
 
     if request.user.is_authenticated:
@@ -819,15 +868,44 @@ def updateUserData(request):
 
     return JsonResponse('User Updated.', safe=False)
 
-""" Logout event after updating user details 
 
-def logoutUser(request):
+def createNewUser(request):
+    data = json.loads(request.body)
+    name = data['name']
+    username = data['username']
+    password = data['password']
+    role = data['role']
+    dealertype = data['dealertype']
+
+    user = User.objects.create_user(username=username, password=password)
+    user.is_superuser = False  
+    user.is_staff = False
+    user.save()
+
+    customer = Customer.objects.create(
+        user=user,
+        name=name,
+        password=password,
+        user_type=role
+    )
+    if dealertype == 'redpoly':
+            customer.redpoly = 'yes'
+    else:
+        customer.redpoly = 'no'
+    
+    customer.save()
+
+    return JsonResponse('User Created.', safe=False)
+
+
+def getUserId(request):
     data = json.loads(request.body)
     username = data['username']
+    
     user = User.objects.get(username=username)
-    print(user)
+    userId = user.id
+    return JsonResponse({'userId': userId})
 
-    return JsonResponse('User Logged Out.', safe=False) """
 
 
 
@@ -838,10 +916,23 @@ def adminOrders(request):
     if request.user.is_authenticated:
         customer = request.user.customer
         
-        if customer.user_type in 'admin':
+        if customer.user_type in ('admin'):
             customers = Customer.objects.filter(user_type='customer')
-            ordered_products = OrderedProduct.objects.all()
-            context = {'customers': customers, 'products': products, 'ordered_products':ordered_products }
+            ordered_products = OrderedProduct.objects.all().order_by('-date_ordered')
+
+            # Group ordered products by customer and date
+            customer_orders = {}
+            for customer in customers:
+                customer_orders[customer.id] = defaultdict(list)
+                for item in ordered_products:
+                    if item.customer == customer:
+                        ordered_date = item.date_ordered.strftime('%d-%m-%Y')
+                        customer_orders[customer.id][ordered_date].append(item)
+
+                # Sort the keys (dates) in reverse order to get latest first
+                customer_orders[customer.id] = dict(sorted(customer_orders[customer.id].items(), key=lambda x: datetime.strptime(x[0], '%d-%m-%Y'), reverse=True))
+
+            context = {'customers': customers, 'products': products, 'ordered_products':ordered_products, 'customer_orders': customer_orders }
             return render(request, 'admin/orders.html', context) 
         else:
             return render(request, 'base/invalid.html')

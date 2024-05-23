@@ -3,14 +3,14 @@
 
 {% block content %}
 
-    <link rel="stylesheet" href="{% static 'css/customer/customer.css' %}">
+    <link rel="stylesheet" href="/static/css/customer/customer.css">
 
     <div class="col-12">
         <div class="mobile-navlinks" style="display: grid; grid-template-columns: 50% 39% 11%;">
             <a class="btn store" style="width:auto; justify-self:end" href="{% url 'store' %}">Store</a> 
             <a class="btn orders" style="width:auto; justify-self:start; " href="{% url 'myOrders' %}">Orders</a>
             <a href="{% url 'logout' %}"class="btn-warning" style="font-size:14px;width:max-content;height:30px; padding:2px 6px; transform:translateX(20px)" id="logout">
-                <img src="{% static 'images/logout.png' %}" style="width: 22px; height: 22px; transform:translateY(1px); background-color: #ffc107; " >
+                <img src="/static/images/logout.png" style="width: 22px; height: 22px; transform:translateY(1px); background-color: #ffc107; " >
             </a>        
         </div>
         <hr style='border-bottom: 1px solid black;'>
@@ -158,8 +158,8 @@
         </div>
     </div>
 
-    <script src="{% static 'js/customer/navbar.js' %}"></script>
+    <script src="/static/js/customer/navbar.js"></script>
 
-    <script src="{% static 'js/customer/store.js' %}"></script>
+    <script src="/static/js/customer/store.js"></script>
 
 {% endblock content %}

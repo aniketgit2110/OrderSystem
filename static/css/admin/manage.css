@@ -23,12 +23,21 @@
     border-bottom: none;
     background-color: #ffffff;
     border-radius:10px;
-    border: 1px solid black;
 }
 
 .update-button,
-.create-user {
+.create-new-user,
+.create-user-button {
   background-color: #007bff; 
+  color: white; 
+  border: none; 
+  padding: 6px 15px; 
+  border-radius: 12px; 
+  cursor: pointer; 
+  margin-top: 12px;
+}
+.cancel-new-user{
+  background-color: #e12456e2; 
   color: white; 
   border: none; 
   padding: 6px 15px; 
@@ -38,11 +47,31 @@
 }
 
 .update-button[disabled],
-.create-user[disabled] {
-  opacity: 0.5; /* Adjust the opacity as per your preference */
-  pointer-events: none; /* Disable pointer events */
-  cursor: not-allowed; /* Change cursor to not-allowed */
+.create-new-user[disabled],
+.create-user-button[disabled],
+.cancel-new-user[disabled] {
+  opacity: 0.5; 
+  pointer-events: none; 
+  cursor: not-allowed; 
 }
+
+
+
+#user-form label{
+  width: 30%;
+  padding-bottom: 2px;
+}
+#user-form input,
+#user-form select {
+    border-radius: 5px;
+    padding-bottom: 2px;
+}
+
+
+
+
+
+
 
 @media (min-width: 540px) {
   .col-12{
@@ -52,49 +81,17 @@
 }
 
 
-@media (max-width: 480px) {
-    body{
-        font-size:13px;
-    }
-
-    .form-control,
-    .dealer-type {
-        font-size: 13px;
-    }
-
-    .mobile-navlinks {
-        display: flex; /* Show on medium screens */
-        padding: 10px 20px; /* Add padding around buttons */
-      }
-    
-      .mobile-navlinks a {
-        font-size: 18px; /* Adjust font size for medium screens */
-        font-weight: bold; /* Make buttons bold */
-        border-radius: 5px; /* Add rounded corners */
-      }
-    
-      .mobile-navlinks a:hover {
-        background-color: #f5f5f5; /* Add hover effect */
-      }
-    
-      .manage { /* Style Store button (active) */
-        border-bottom: 3px solid black; /* Thick bottom border */
-        background-color: #ced7d8; /* Slight background color */
-      }
-      
-      .navbar{
-        display: none;
-    }
-}
-
 @media (max-width: 540px) {
     body{
         font-size:14px;
     }
-
+    .row{
+      font-size: 14px;
+    }
     .form-control,
     .dealer-type {
         font-size: 14px;
+        padding: 2px 2px;
     }
 
     .mobile-navlinks {
@@ -121,4 +118,165 @@
         display: none;
     }
 
+}
+
+
+@media (max-width: 480px) {
+  body{
+      font-size:13px;
+  }
+  .row{
+    font-size: 13.5px;
+  }
+  .form-control,
+  .dealer-type {
+      font-size: 13px;
+      padding: 2px 2px;
+  }
+
+  .mobile-navlinks {
+      display: flex; /* Show on medium screens */
+      padding: 10px 20px; /* Add padding around buttons */
+    }
+  
+    .mobile-navlinks a {
+      font-size: 18px; /* Adjust font size for medium screens */
+      font-weight: bold; /* Make buttons bold */
+      border-radius: 5px; /* Add rounded corners */
+    }
+  
+    .mobile-navlinks a:hover {
+      background-color: #f5f5f5; /* Add hover effect */
+    }
+  
+    .manage { /* Style Store button (active) */
+      border-bottom: 3px solid black; /* Thick bottom border */
+      background-color: #ced7d8; /* Slight background color */
+    }
+    
+    .navbar{
+      display: none;
+  }
+}
+
+
+@media (max-width: 400px) {
+  body{
+      font-size:12px;
+  }
+  .row{
+    font-size: 13px;
+  }
+  .form-control,
+  .dealer-type {
+      font-size: 12px;
+      padding: 2px 2px;
+  }
+
+  .mobile-navlinks {
+      display: flex; /* Show on medium screens */
+      padding: 8 16; /* Add padding around buttons */
+    }
+  
+    .mobile-navlinks a {
+      font-size: 18px; /* Adjust font size for medium screens */
+      font-weight: bold; /* Make buttons bold */
+      border-radius: 5px; /* Add rounded corners */
+    }
+  
+    .mobile-navlinks a:hover {
+      background-color: #f5f5f5; /* Add hover effect */
+    }
+  
+    .manage { /* Style Store button (active) */
+      border-bottom: 3px solid black; /* Thick bottom border */
+      background-color: #ced7d8; /* Slight background color */
+    }
+    
+    .navbar{
+      display: none;
+  }
+}
+
+
+@media (max-width: 360px) {
+  body{
+      font-size:11px;
+  }
+
+  .row{
+    font-size: 12.5px;
+  }
+
+  .form-control,
+  .dealer-type {
+      font-size: 11px;
+      padding: 2px 2px;
+  }
+
+  .mobile-navlinks {
+      display: flex; /* Show on medium screens */
+      padding: 6px 12px; /* Add padding around buttons */
+    }
+  
+    .mobile-navlinks a {
+      font-size: 17px; /* Adjust font size for medium screens */
+      font-weight: bold; /* Make buttons bold */
+      border-radius: 5px; /* Add rounded corners */
+    }
+  
+    .mobile-navlinks a:hover {
+      background-color: #f5f5f5; /* Add hover effect */
+    }
+  
+    .manage { /* Style Store button (active) */
+      border-bottom: 3px solid black; /* Thick bottom border */
+      background-color: #ced7d8; /* Slight background color */
+    }
+    
+    .navbar{
+      display: none;
+  }
+}
+
+
+
+
+
+@media (max-width: 320px) {
+  body{
+      font-size:10px;
+  }
+  .row{
+    font-size: 12px;
+  }
+  .form-control,
+  .dealer-type {
+      font-size: 10px;
+      padding: 2px 2px;
+  }
+
+  .mobile-navlinks {
+      display: flex; /* Show on medium screens */
+      padding: 4px 8px; /* Add padding around buttons */
+    }
+  
+    .mobile-navlinks a {
+      font-size: 16.5px; /* Adjust font size for medium screens */
+      font-weight: bold; /* Make buttons bold */
+      border-radius: 5px; /* Add rounded corners */
+    }
+  
+    .mobile-navlinks a:hover {
+      background-color: #f5f5f5; /* Add hover effect */
+    }
+  
+    .manage { /* Style Store button (active) */
+      border-bottom: 3px solid black; /* Thick bottom border */
+      background-color: #ced7d8; /* Slight background color */
+    }
+    
+    .navbar{
+      display: none;
+  }
 }

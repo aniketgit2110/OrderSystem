@@ -61,6 +61,7 @@ individualSendButtons.forEach(button => {
 
         if(button.checked){
           dispatchSingle(itemId);
+          button.checked = false;
         }
         
     });
@@ -73,6 +74,7 @@ individualRevertButtons.forEach(button => {
       const itemId = button.id.split('-')[2]; // Extract item ID
       if(button.checked){
         revertSingle(itemId);
+        button.checked = false;
       }
   });
 });
@@ -82,23 +84,13 @@ const dispatchAllButtons = document.querySelectorAll('.dispatch-all-button');
 dispatchAllButtons.forEach(button => {
   button.addEventListener('change', function(event) {
     const customerId = button.id.split('-')[2];
+    const day = button.id.split('-')[3];
+    const month = button.id.split('-')[4];
+    const year = button.id.split('-')[5];
+    const date =`${day}-${month}-${year}`;
     if(button.checked){
-      fetch('/dispatch_all/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrftoken,
-        },
-        body: JSON.stringify({
-          'cust_id': customerId,
-        }),
-      })
-      .then(response => response.json())
-      .then((data) => {
-        const custId = data.cust_id;
-        updateSections(custId);
-        button.checked = false;
-      });
+      dispatchAll(customerId,date);
+      button.checked = false;
     }
   });
 });
@@ -109,33 +101,143 @@ const revertAllButtons = document.querySelectorAll('.revert-all-button');
 revertAllButtons.forEach(button => {
   button.addEventListener('change', function(event) {
     const customerId = button.id.split('-')[2];
+    const day = button.id.split('-')[3];
+    const month = button.id.split('-')[4];
+    const year = button.id.split('-')[5];
+    const date =`${day}-${month}-${year}`;    
     if (button.checked) {
-      fetch('/revert_all/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrftoken,
-        },
-        body: JSON.stringify({
-          'cust_id': customerId,
-        }),
-      })
-      .then(response => response.json())
-      .then((data) => {
-        const custId = data.cust_id;
-        updateSections(custId);
-        button.checked = false;
-      });
+      revertAll(customerId,date);
+      button.checked = false;
     }
   });
 });
 
+
 /* 
 
-Updating Sections
+Functions for dispatching and reverting
+
+ */
+// dispatch item with selected quantity
+function dispatchItem(itemId,selectedQuantity){
+  fetch('/dispatch_item/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrftoken,
+    },
+    body: JSON.stringify({
+      'item_id': itemId,
+      'selected': selectedQuantity,
+      }),
+  })
+  .then(response => response.json())
+  .then((data) => {
+    updateSections(itemId);
+  });
+}
+//dispatch item with full quantity
+function dispatchSingle(itemId){
+  fetch('/dispatch_single/', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken,
+    },
+    body: JSON.stringify({
+        'item_id': itemId
+    }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    updateSections(itemId);
+  });
+}
+//dispatch all items, full quantity, for that date and customer
+function dispatchAll(customerId,date){
+  fetch('/dispatch_all/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrftoken,
+    },
+    body: JSON.stringify({
+      'cust_id': customerId,
+      'date' : date,
+    }),
+  })
+  .then(response => response.json())
+  .then((data) => {
+    updateSectionsFull(customerId,date);
+  });
+}
+
+//revert dispatch for selected quantity
+function revertDispatch(itemId,selectedQuantity){
+  fetch('/revert_dispatch/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrftoken,
+    },
+    body: JSON.stringify({
+      'item_id': itemId,
+      'selected': selectedQuantity,
+      }),
+  })
+  .then(response => response.json())
+  .then((data) => {
+    updateSections(itemId);
+  });
+}
+
+//revert full dispatch for item
+function revertSingle(itemId){
+  fetch('/revert_single/', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken,
+    },
+    body: JSON.stringify({
+        'item_id': itemId
+    }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    updateSections(itemId);
+  });
+}
+
+//revert all items, full quantity, for that date and customer
+function revertAll(customerId,date){
+  fetch('/revert_all/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrftoken,
+    },
+    body: JSON.stringify({
+      'cust_id': customerId,
+      'date' : date,
+    }),
+  })
+  .then(response => response.json())
+  .then((data) => {
+    updateSectionsFull(customerId,date);
+  });
+}
+
+
+/* 
+
+Updating Sections using InnerHTML
 
 */
-function updateSections(custId) {
+
+//to update on single or quantity dispatch
+function updateSections(itemId) {
+  const productDiv = document.getElementById(`ordered-item-${itemId}`);
   fetch('/get_content/', {
     method: 'POST',
     headers: {
@@ -143,59 +245,183 @@ function updateSections(custId) {
       'X-CSRFToken': csrftoken,
     },
     body: JSON.stringify({
-      'cust_id': custId,
+      'item_id': itemId,
     }),
   })
   .then(response => response.json())
   .then(data => {
     const items = data.items;
     const products = data.products;
-    const orderDiv = document.getElementById(`combined-content-${custId}`);
 
     const newContent = items.map(item => {
       const product = products.find(prod => prod.id === item.product_id);
       return `
-        <div class="inline-checkbox-${item.id}" style="display: grid; grid-template-columns: 18% 40% 42%;">
-          <div style="justify-self: start; padding: 6px 0;padding-left:5px;">${product.name}&nbsp;-</div>
-                    
-          <div style="display: grid; padding: 4px 0;">
+      <div class="inline-checkbox-${item.id}" id="ordered-product-${item.id}" style="display: grid; grid-template-columns: 18% 40% 42%;padding:5px;">
+      <div style="justify-self: start; padding: 6px 0;padding-left:5px;" data-date="${item.date_ordered}">${product.name}&nbsp;-</div>
+                                    
+      <div style="display: grid; padding: 4px 0;">
+        
+        <div style="justify-self: center; padding: 2px 0px;">
+          <div style="display: grid; grid-template-columns: auto auto auto;">
+            <label for="available-${item.id}" style="display: inline-block; width: 40px;">Qty : </label>
             
-            <div style="justify-self: center; padding: 2px 0px;">
-              <div style="display: grid; grid-template-columns: auto auto auto;">
-                <label for="available-${item.id}" style="display: inline-block; width: 40px;">Qty : </label>
-                
-                <select id="available-${item.id}" name="available-${item.id}" style="display: inline-block; width: 42px; height: 26px;">
-                  <option value="${item.pending_quantity}">${item.pending_quantity}</option>
-                </select>
+            <select id="available-${item.id}" name="available-${item.id}" style="display: inline-block; width: 42px; height: 26px;">
+              <option value="${item.pending_quantity}">${item.pending_quantity}</option>
+            </select>
 
-                <input type="checkbox" class="individual-send-button" id="individual-send-${item.id}" style="margin-left: 5px;">
-
-              </div>
-            </div>
-
-          </div>
-
-          <div style="display: grid; padding: 4px 0;">
-                        
-            <div style="justify-self: center; padding: 2px 0;">
-              <div style="display: grid; grid-template-columns: auto auto auto;">
-                <label for="dispatched-${item.id}" style="display: inline-block; width: 40px;">Qty : </label>
-
-                <select id="dispatched-${item.id}" name="dispatched-${item.id}" style="display: inline-block; width: 42px; height: 26px;">
-                  <option value="${item.dispatched_quantity}">${item.dispatched_quantity}</option>
-                </select>
-
-                <input type="checkbox" class="individual-revert-button" id="individual-revert-${item.id}" style="margin-left: 5px;">
-
-              </div>
-            </div>
-          </div>
+            <input type="checkbox" class="individual-send-button" id="individual-send-${item.id}" style="margin-left: 5px;">
           
+          </div>
         </div>
+
+      </div>
+
+      <div style="display: grid; padding: 4px 0;">
+                  
+        <div style="justify-self: center; padding: 2px 0;">
+          <div style="display: grid; grid-template-columns: auto auto auto;">
+            <label for="dispatched-${item.id}" style="display: inline-block; width: 40px;">Qty : </label>
+
+            <select id="dispatched-${item.id}" name="dispatched-${item.id}" style="display: inline-block; width: 42px; height: 26px;">
+              <option value="${item.dispatched_quantity}">${item.dispatched_quantity}</option>
+            </select>
+
+            <input type="checkbox" class="individual-revert-button" id="individual-revert-${item.id}" style="margin-left: 5px;">
+          
+          </div>
+        </div>
+      </div>
+    </div>
 
       `;
     }).join('');
-    orderDiv.querySelector('.updating-section').innerHTML = newContent; 
+    productDiv.innerHTML = newContent; 
+
+    //Reattaching Quantity Dropdown Options
+    const availableDropdowns = productDiv.querySelectorAll('select[id^="available-"]');
+    const dispatchedDropdowns = productDiv.querySelectorAll('select[id^="dispatched-"]');
+    
+    availableDropdowns.forEach(select => {
+      const initialQuantity = parseInt(select.options[0].value);
+      const options = [];
+      for (let multiple = 4; multiple < initialQuantity; multiple += 4) {
+        options.push(`<option value="${multiple}">${multiple}</option>`);
+      }
+      select.innerHTML += options.join('');
+    });
+    
+    dispatchedDropdowns.forEach(select => {
+      const initialQuantity = parseInt(select.options[0].value);
+      const options = [];
+      for (let multiple = 4; multiple < initialQuantity; multiple += 4) {
+        options.push(`<option value="${multiple}">${multiple}</option>`);
+      }
+      select.innerHTML += options.join('');
+    });
+
+    //Reattaching the listeners for quantity dropdowns
+    availableDropdowns.forEach(select => {
+      select.addEventListener('change', function(event) {
+        const itemId = select.id.split('-')[1];
+        const selectedQuantity = parseInt(select.value);
+        dispatchItem(itemId,selectedQuantity);
+      });
+    });
+    dispatchedDropdowns.forEach(select => {
+      select.addEventListener('change', function(event) {
+        const itemId = select.id.split('-')[1];
+        const selectedQuantity = parseInt(select.value);
+        revertDispatch(itemId,selectedQuantity);
+      });
+    });
+
+    // Reattach event listeners for individual checkboxes
+    const individualSendButtons = productDiv.querySelectorAll('.individual-send-button');
+    const individualRevertButtons = productDiv.querySelectorAll('.individual-revert-button');
+    individualSendButtons.forEach(button => {
+        button.addEventListener('change', function(event) {
+            const itemId = button.id.split('-')[2]; 
+            dispatchSingle(itemId);
+        });
+    });
+    individualRevertButtons.forEach(button => {
+        button.addEventListener('change', function(event) {
+            const itemId = button.id.split('-')[2];
+            revertSingle(itemId);
+        });
+    });
+
+  }); 
+  
+}
+
+//To update on dispatchAll and revertAll
+function updateSectionsFull(custId, date){
+  const orderDiv = document.getElementById(`customer-section-${custId}-${date}`);
+
+  fetch('/get_customer_order_content/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrftoken,
+    },
+    body: JSON.stringify({
+      'cust_id': custId,
+      'date': date,
+    }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    const items = data.items;
+    const products = data.products;
+
+    const newContent = items.map(item => {
+      const product = products.find(prod => prod.id === item.product_id);
+      return `
+      
+        <div class="updating-section" id="ordered-item-${item.id}">
+                        
+          <div class="inline-checkbox-${item.id}" id="ordered-product-${item.id}" style="display: grid; grid-template-columns: 18% 40% 42%;padding:5px;">
+            <div style="justify-self: start; padding: 6px 0;padding-left:5px;" data-date="${item.date_ordered}">${product.name}&nbsp;-</div>
+                                          
+            <div style="display: grid; padding: 4px 0;">
+              
+              <div style="justify-self: center; padding: 2px 0px;">
+                <div style="display: grid; grid-template-columns: auto auto auto;">
+                  <label for="available-${item.id}" style="display: inline-block; width: 40px;">Qty : </label>
+                  
+                  <select id="available-${item.id}" name="available-${item.id}" style="display: inline-block; width: 42px; height: 26px;">
+                    <option value="${item.pending_quantity}">${item.pending_quantity}</option>
+                  </select>
+
+                  <input type="checkbox" class="individual-send-button" id="individual-send-${item.id}" style="margin-left: 5px;">
+                
+                </div>
+              </div>
+
+            </div>
+
+            <div style="display: grid; padding: 4px 0;">
+                        
+              <div style="justify-self: center; padding: 2px 0;">
+                <div style="display: grid; grid-template-columns: auto auto auto;">
+                  <label for="dispatched-${item.id}" style="display: inline-block; width: 40px;">Qty : </label>
+
+                  <select id="dispatched-${item.id}" name="dispatched-${item.id}" style="display: inline-block; width: 42px; height: 26px;">
+                    <option value="${item.dispatched_quantity}">${item.dispatched_quantity}</option>
+                  </select>
+
+                  <input type="checkbox" class="individual-revert-button" id="individual-revert-${item.id}" style="margin-left: 5px;">
+                
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        </div>
+      `;
+    }).join('');
+    orderDiv.querySelector('.section-content').innerHTML = newContent;
 
     //Reattaching Quantity Dropdown Options
     const availableDropdowns = orderDiv.querySelectorAll('select[id^="available-"]');
@@ -251,114 +477,37 @@ function updateSections(custId) {
 
   });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* 
-
-Functions for completing loop
-
- */
-function dispatchItem(itemId,selectedQuantity){
-  fetch('/dispatch_item/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrftoken,
-    },
-    body: JSON.stringify({
-      'item_id': itemId,
-      'selected': selectedQuantity,
-      }),
-  })
-  .then(response => response.json())
-  .then((data) => {
-    const custId = data.cust_id;
-    updateSections(custId);
-  });
-}
-
-function revertDispatch(itemId,selectedQuantity){
-  fetch('/revert_dispatch/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrftoken,
-    },
-    body: JSON.stringify({
-      'item_id': itemId,
-      'selected': selectedQuantity,
-      }),
-  })
-  .then(response => response.json())
-  .then((data) => {
-    const custId = data.cust_id;
-    updateSections(custId);
-  });
-}
-
-function dispatchSingle(itemId){
-  fetch('/dispatch_single/', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrftoken,
-    },
-    body: JSON.stringify({
-        'item_id': itemId
-    }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    const custId = data.cust_id;
-    updateSections(custId);
-  });
-}
-
-function revertSingle(itemId){
-  fetch('/revert_single/', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrftoken,
-    },
-    body: JSON.stringify({
-        'item_id': itemId
-    }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    const custId = data.cust_id;
-    updateSections(custId);
-  });
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //To toggle the Mitigate Section
 function toggleSection(orderId){
@@ -697,3 +846,4 @@ function revertDenial(orderId){
   });
 }
 
+ */

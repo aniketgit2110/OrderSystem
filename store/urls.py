@@ -40,6 +40,7 @@ urlpatterns = [
     path('dispatch_all/',views.dispatchAll, name="dispatch_all"),
     path('revert_all/',views.revertAll, name="revert_all"),
     path('get_content/',views.getContent, name="get_content"),
+    path('get_customer_order_content/',views.getOrderContent, name="get_customer_order_content"),
     path('update_order_status/',views.updateStatus, name="update_order_status"),
     path('item_to_order_id/',views.itemToOrder, name="item_to_order_id"),
     path('mitigate_inventory/',views.mitigateInventory, name="mitigate_inventory"),
@@ -66,6 +67,11 @@ urlpatterns = [
     path('update_username/',views.updateUsername, name="update_username"),
     path('update_password/',views.updateUserPassword, name="update_password"),
     path('update_user_data/',views.updateUserData, name="update_user_data"),
+    path('create_new_user/',views.createNewUser, name="create_new_user"),
+    path('get_user_id/',views.getUserId, name="get_user_id"),
+
+
+
 
     path('home/admin/orders/',views.adminOrders, name="admin_orders"), 
     path('home/admin/inventory/',views.adminInventory, name="admin_inventory"), 

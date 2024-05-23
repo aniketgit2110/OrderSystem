@@ -13,27 +13,23 @@ function toggleDropdown(menuId) {
 
 //Default filter values
 let checkedCustomerIDs = [];
+let dateFilter = null;
+
+//Apply Customer Filter Event Listener
 var customerCheckboxes = document.querySelectorAll('.filter-category input[type="checkbox"][id^="customer-filter-"]');
 customerCheckboxes.forEach(function(checkbox) {
     checkbox.addEventListener('change', filterOrders);
 });
-let dateFilter = null;
+
+//Apply Date Filter Event Listener
 const dateFilterInput = document.getElementById('date-filter');
-const currentDate = new Date().toISOString().split('T')[0];
-dateFilterInput.value = currentDate;
 dateFilterInput.addEventListener('change', filterOrders);
 
 // Function to check current filters
 function filterOrders() {
-  updateCustomerFilter();
-  updateDateFilter();
-}
-
-//Customer filter
-function updateCustomerFilter() {
+  //Check for Customer Filter
   checkedCustomerIDs = [];
   var filterOptions = document.querySelectorAll('.customer-filter-dropdown-menu .filter-category');
-
   filterOptions.forEach(function(option) {
       var checkbox = option.querySelector('input[type="checkbox"]');
       if (checkbox.checked) {
@@ -41,31 +37,26 @@ function updateCustomerFilter() {
         checkedCustomerIDs.push(customerID);
       }
   });
-  checkEmpty(filterOptions);
-  console.log("Customers Selected :", checkedCustomerIDs);
+  checkEmptyCustomers(filterOptions);
 
-  const orderContents = document.querySelectorAll('.order-detail-row');
-  orderContents.forEach(row => {
-      row.classList.add('hidden');
-  });
-  const orderHeaders = document.querySelectorAll('.order-header-row');
-  orderHeaders.forEach(row => {
-      row.classList.add('hidden');
-  });
+  const selectedDate = dateFilterInput.value;
+  if (selectedDate) {
+    const [year, month, day] = selectedDate.split('-');
+    dateFilter = `${day}-${month}-${year}`;
+  } else {
+    dateFilter = null;
+  }
 
-  checkedCustomerIDs.forEach(customerID => {
-    const customerOrders = document.getElementById(`order-details-for-${customerID}`);
-    if (customerOrders) {
-      customerOrders.classList.remove('hidden');
-    }
-    const customerHeader = document.getElementById(`order-header-for-${customerID}`);
-    if (customerHeader) {
-      customerHeader.classList.remove('hidden');
-    }
-  });
+  if(dateFilter != null){
+    applyFilters(checkedCustomerIDs,dateFilter);
+  } else if (dateFilter == null){
+    applyCustomersOnly(checkedCustomerIDs);
+  }
+  
 }
 
-function checkEmpty(filterOptions){
+//Customer filter empty checker
+function checkEmptyCustomers(filterOptions){
   if (checkedCustomerIDs.length === 0) {
     filterOptions.forEach(function(option) {
       var checkbox = option.querySelector('input[type="checkbox"]');
@@ -76,41 +67,53 @@ function checkEmpty(filterOptions){
 }
 
 
-// Add event listener for changes in the date filter input field
-function updateDateFilter() {
-  const selectedDate = dateFilterInput.value;
-  const [year, month, day] = selectedDate.split('-');
-  const formattedDate = `${day}-${month}-${year}`;
-  console.log('Selected date:', formattedDate);
+//Apply Filters
+function applyFilters(checkedCustomerIDs,dateFilter){
 
-  fetch('/date_filter/', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrftoken,
-    },
-    body: JSON.stringify({
-        'date': formattedDate,
-        'customer_ids': checkedCustomerIDs,
-    }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    const orderedProductDivs = document.querySelectorAll('[id^="ordered-product-"]');
-    orderedProductDivs.forEach(div => {
-      if (!div.classList.contains('hidden')) {
-        div.classList.add('hidden');
-      }
-    });
-
-    const products = data.products;
-    products.forEach(product => {
-      const productDiv = document.getElementById(`ordered-product-${product.id}`);
-      if(productDiv){
-        productDiv.classList.remove('hidden');
-      }
-    });
-    
+  topHeaders = document.querySelectorAll('[id^="customer-header-"]');
+  topHeaders.forEach(div =>{
+    div.classList.add('hidden');
   });
-};
+  allDivs = document.querySelectorAll('[id^="customer-section-"]');
+  allDivs.forEach(div =>{
+    div.classList.add('hidden');
+  });
 
+  checkedCustomerIDs.forEach(customerId => {
+    const headerId = `customer-header-${customerId}`;
+    const headerDiv = document.getElementById(headerId);
+    if(headerDiv){
+      headerDiv.classList.remove('hidden');
+    }
+
+    const divId = `customer-section-${customerId}-${dateFilter}`;
+    const filteredDiv = document.getElementById(divId);
+    if(filteredDiv){
+      filteredDiv.classList.remove('hidden');
+    }
+  });
+}
+
+function applyCustomersOnly(checkedCustomerIDs) {
+  topHeaders = document.querySelectorAll('[id^="customer-header-"]');
+  topHeaders.forEach(div => {
+    div.classList.add('hidden');
+  });
+  allDivs = document.querySelectorAll('[id^="customer-section-"]');
+  allDivs.forEach(div => {
+    div.classList.add('hidden');
+  });
+
+  checkedCustomerIDs.forEach(customerId => {
+    const headerId = `customer-header-${customerId}`;
+    const headerDiv = document.getElementById(headerId);
+    if (headerDiv) {
+      headerDiv.classList.remove('hidden');
+    }
+
+    const customerSections = document.querySelectorAll(`[id^="customer-section-${customerId}-"]`);
+    customerSections.forEach(div => {
+      div.classList.remove('hidden');
+    });
+  });
+}

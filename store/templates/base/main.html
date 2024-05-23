@@ -8,9 +8,9 @@
     
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
 
-    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
 
 
     <script type="text/javascript">
@@ -38,52 +38,43 @@
   </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand">Four Square</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            {% comment %} Dealer Links {% endcomment %}
-            <li class="nav-item active">
-              <a class="nav-link hidden" href="{% url 'store' %}" id="customer-home">Store <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item active">
-              <a class="nav-link hidden" href="{% url 'myOrders' %}" id="customer-orders">Orders <span class="sr-only">(current)</span></a>
-            </li>
-            
-            {% comment %} Manager Links {% endcomment %}
-            <li class="nav-item active">
-              <a class="nav-link hidden" href="{% url 'orders' %}" id="all-orders">Orders<span class="sr-only">(current)</span></a>
-            </li>
-            
-            
-            {% comment %} Admin Links {% endcomment %}
-            <li class="nav-item active">
-              <a class="nav-link hidden" href="{% url 'manage' %}" id="manage-users">Manage<span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item active">
-              <a class="nav-link hidden" href="{% url 'admin_orders' %}" id="admin-orders">Orders<span class="sr-only">(current)</span></a>
-            </li>
-            
+  <nav class= "navbar">
+    <a style="color: white; font-size: 1.25rem; text-decoration: none;">Four Square</a>
+    
+    <div style="flex: 1; display: flex; justify-content: flex-start; align-items: center;">
+      <ul style="list-style: none; margin: 0; padding: 0; display: flex; gap: 1rem;">
+        <li>
+        <!-- Dealer Links -->
+        <li>
+          <a class="hidden" href="{% url 'store' %}" id="customer-home" style="color: white; text-decoration: none; justify-self:start;">Store</a>
+        </li>
+        <li>
+          <a class="hidden" href="{% url 'myOrders' %}" id="customer-orders" style="color: white; text-decoration: none;justify-self:start;">Orders</a>
+        </li>
+        
+        <!-- Manager Links -->
+        <li>
+          <a class="hidden" href="{% url 'orders' %}" id="all-orders" style="color: white; text-decoration: none;justify-self:start;">Orders</a>
+        </li>
+        
+        <!-- Admin Links -->
+        <li>
+          <a class="hidden" href="{% url 'manage' %}" id="manage-users" style="color: white; text-decoration: none;justify-self:start;">Manage</a>
+        </li>
+        <li>
+          <a class="hidden" href="{% url 'admin_orders' %}" id="admin-orders" style="color: white; text-decoration: none;justify-self:start;">Orders</a>
+        </li>
+      </ul>
+    </div>
 
-          </ul>
-          <div class="form-inline my-2 my-lg-0">
-            <a href="{% url 'login' %}"class="btn btn-warning" id="login">Login </a>
-            <br>
-            <a href="{% url 'logout' %}"class="btn btn-warning hidden" id="logout">Log Out </a>
-            
-            <a href="{% url 'store' %}">
-               <img  id="cart-icon" class='' src="{% static 'images/cart.png' %}" >
-           </a>
-           <p id="cart-total" class=''>{{cartItems}}</p>
-
-       </div>
-        </div>
-      </nav>
-
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <a href="{% url 'login' %}" id="login" style="background-color: #ffc107; padding: 0.5rem 1rem; color: black; text-decoration: none; border-radius: 0.25rem;">Login</a>
+      <a class="hidden" href="{% url 'logout' %}" id="logout" style="background-color: #ffc107; padding: 0.5rem 1rem; color: black; text-decoration: none; border-radius: 0.25rem;" class="hidden">Log Out</a>
+    </div>
+  </nav>
+    
+    
+    
     <div class="container">
         {% block content%}
         {% endblock content%}
@@ -107,13 +98,20 @@
       </div>
   </footer>
   
+  
+
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
   <script type="text/javascript">
     if(user != 'AnonymousUser'){
       document.getElementById('login').classList.add('hidden')
       document.getElementById('logout').classList.remove('hidden')
     }
     if(user == 'AnonymousUser'){
-      document.getElementById('cart-total').classList.add('hidden')
       document.getElementById('customer-home').classList.add('hidden')
       document.getElementById('customer-orders').classList.add('hidden')
       document.getElementById('all-orders').classList.add('hidden')
@@ -124,13 +122,5 @@
     
 
   </script>
-
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
-  
 </body>
 </html>

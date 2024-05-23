@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'css/customer/myorders.css' %}">
+<link rel="stylesheet" href="/static/css/customer/myorders.css">
 
 <div class="row">
     <div class="col-12">
@@ -10,7 +10,7 @@
             <a class="btn store" style="width:auto; justify-self:end" href="{% url 'store' %}">{% comment %} &#x2190; {% endcomment %}Store</a> 
             <a class="btn orders" style="width:auto; justify-self:start" href="{% url 'myOrders' %}">{% comment %} &#x2190; {% endcomment %}Orders</a> 
             <a href="{% url 'logout' %}"class="btn-warning" style="font-size:14px;width:max-content;height:30px; padding:2px 6px; transform:translateX(20px)" id="logout">
-                <img src="{% static 'images/logout.png' %}" style="width: 22px; height: 22px; transform:translateY(1px); background-color: #ffc107; " >
+                <img src="/static/images/logout.png" style="width: 22px; height: 22px; transform:translateY(1px); background-color: #ffc107; " >
             </a>
         </div>
         <hr style='border-bottom: 1px solid black;'>
@@ -54,11 +54,11 @@
                                 <a></a>
                                 <div onclick="requestCancellation({{ item.id }})" class="btn delete-button {% if item.status == 'cancel-requested'%}hidden{% endif%}" id="delete-ordered-{{item.id}}"
                                 style='height:35px;border-radius:10px;background-color: #ffacb4;border-color: #30070b;'>
-                                    <img src="{% static 'images/dustbin.png' %}" style="width: 22px; height: 22px;transform:translateY(-3px);" >
+                                    <img src="/static/images/dustbin.png" style="width: 22px; height: 22px;transform:translateY(-3px);" >
                                 </div>
                                 <div onclick="revertCancellation({{ item.id }})" class="btn revert-button {% if item.status == 'placed'%}hidden{% endif%}" id="revert-deleted-{{item.id}}"
                                 style='height:35px;border-radius:10px;background-color: #eaf3a4;border-color: #2a2907;'>
-                                    <img src="{% static 'images/revert.svg' %}" style="width: 22px; height: 22px;transform:translateY(-3px);" >
+                                    <img src="/static/images/revert.svg" style="width: 22px; height: 22px;transform:translateY(-3px);" >
                                 </div>
                                 <a></a>
                             </div>
@@ -105,8 +105,8 @@
     </div>
 </div>
 
-<script src="{% static 'js/customer/navbar.js' %}"></script>
+<script src="/static/js/customer/navbar.js"></script>
 
-<script src="{% static 'js/customer/myorders.js' %}"></script>
+<script src="/static/js/customer/myorders.js"></script>
 
 {% endblock content %}
